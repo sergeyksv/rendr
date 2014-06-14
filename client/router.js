@@ -166,7 +166,7 @@ ClientRouter.prototype.navigate = function(path, options) {
   if (this.matchesAnyRoute(fragment)) {
     this._router.navigate.apply(this._router, arguments);
   } else {
-    this.redirectTo(fragment, {pushState: false});
+    this.redirectTo(path, {pushState: false});
   }
 };
 
