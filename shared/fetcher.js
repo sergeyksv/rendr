@@ -75,13 +75,13 @@ Fetcher.prototype.checkedFreshTimestamps = {};
  */
 Fetcher.prototype.checkedFreshRate = 10000;
 
-Fetcher.prototype.shouldCheckFresh = function(spec) {
+Fetcher.prototype.shouldCheckFresh = function(spec, checkedFreshRate) {
   var key = this.checkedFreshKey(spec),
       timestamp = this.checkedFreshTimestamps[key];
   if (!timestamp) {
     return true;
   }
-  if (new Date().getTime() - timestamp > this.checkedFreshRate) {
+  if (new Date().getTime() - timestamp > (checkedFreshRate || this.checkedFreshRate) ) {
     return true;
   }
   return false;
@@ -156,7 +156,7 @@ Fetcher.prototype._retrieveModelData = function(spec, modelData, modelOptions, c
      * return the cached object we fire off a fetch, compare the results,
      * and if the data is different, we trigger a 'refresh' event.
      */
-    if (spec.checkFresh && !isServer && this.shouldCheckFresh(spec)) {
+    if (spec.checkFresh && !isServer && this.shouldCheckFresh(spec, (_.isNumber(spec.checkFresh) && spec.checkFresh>1)?spec.checkFresh:undefined)) {
       model.checkFresh();
       this.didCheckFresh(spec);
     }
